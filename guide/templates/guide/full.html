@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DMN Style guide</title>
+  <meta charset="UTF-8">
+  <meta name="description" content="Easy style guide lookup">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <style>
+
+    body {
+      margin: 0 auto;
+      background-color: #eee;
+      font-family: arial;
+    }
+
+    .back {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      margin: 1.5em;
+      text-align: center;
+      background-color: #2158af;
+      color: transparent;
+      text-shadow: 0px 1px 2px rgba(255,255,255,0.2);
+      -webkit-background-clip: text;
+         -moz-background-clip: text;
+              background-clip: text;
+      font-weight: bold;
+    }
+
+    .entry{
+      margin-bottom: 15px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-top: auto;
+      width: 50%;
+      padding: 10px;
+      position: relative;
+    }
+
+    .icon{
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    h4 {
+      font-weight: bold;
+    }
+    h4:hover {
+      text-decoration: underline;
+      color: #2158af
+    }
+
+    .entry-text{
+      display: none;
+    }
+
+  </style>
+
+  <h1>The Dallas Morning News style guide</h1>
+  <div class="w3-bar back">
+    <button class='w3-button w3-khaki w3-hover-yellow nav' id='all'>All</button>
+    <button class='w3-button w3-red w3-hover-yellow nav' id='AP'>AP</button>
+    <button class='w3-button w3-indigo w3-hover-yellow nav' id='DMN'>DMN</button>
+  </div>
+
+  <div class="w3-bar back" id="buttonsHolder"></div>
+
+  <div class="back">
+    <form action="/">
+      <button class="w3-btn w3-indigo" type="submit">Back to search</button>
+    </form>
+  </div>
+
+  {% for entry in entry_list %}
+    <div class="entry w3-card w3-white" id={{entry.id}}>
+      {% if entry.source == "AP" %}
+        <div class="icon" style="color:#bc0d0d">{{entry.source}}</div>
+      {% else %}
+        <div class="icon" style="color:#0d50bc">{{entry.source}}</div>
+      {% endif %}
+      <h4>{{ entry.term }}</h4>
+      <span class="entry-text">{{ entry.definition|linebreaks }}</span>
+    </div>
+  {% endfor %}
+
+  <script>
+    var acc = document.getElementsByClassName("entry");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+      acc[i].onclick = function(){
+          /* Toggle between hiding and showing the active panel */
+          var panel = this.getElementsByTagName("span")[0];
+          if (panel.style.display === "block") {
+              panel.style.display = "none";
+          } else {
+              panel.style.display = "block";
+          }
+      }
+    }
+
+    window.addEventListener( "load", function( windowLoadE ) {
+    var p, letter, button, holder;
+    holder = document.getElementById( "buttonsHolder" );
+    for ( var i = 65; i <= 90; i++ ) {
+        if ( i == 65 || i == 75 || i == 84 ) {
+            p = document.createElement( "p" );
+        }
+        letter = String.fromCharCode( i );
+        button = document.createElement( "button" );
+        button.className = "choice w3-button w3-gray w3-hover-yellow"
+        button.innerHTML = letter;
+        button.setAttribute( "id", letter.toLowerCase() );
+        button.onclick = function() {
+          var id = this.getAttribute('id');
+          var entries = document.getElementsByTagName('h4');
+          for (i = 0; i < entries.length; i++) {
+            var eids = entries[i].parentNode.getAttribute('id')
+            if (entries[i].textContent.toLowerCase()[0].includes(id)) {
+              document.getElementById(eids).style.display = 'block'
+            }
+            else {
+              document.getElementById(eids).style.display = 'none'
+            }
+          }
+        }
+        p.appendChild( button );
+        if ( i == 74 || i == 83 || i == 90 ) {
+            holder.appendChild( p );
+        }
+    }
+    } );
+  </script>
+
+  <script>
+    if (document.addEventListener) {
+      document.addEventListener("click", handleClick, false);
+    }
+    else if (document.attachEvent) {
+        document.attachEvent("onclick", handleClick);
+    }
+
+    function handleClick(event) {
+        event = event || window.event;
+        event.target = event.target || event.srcElement;
+
+        var element = event.target;
+
+        // Climb up the document tree from the target of the event
+        while (element) {
+            if (element.nodeName === "BUTTON" && /nav/.test(element.className)) {
+                // The user clicked on a <button> or clicked on an element inside a <button>
+                // with a class name called "foo"
+                showhide(element);
+                break;
+            }
+
+            element = element.parentNode;
+        }
+    }
+
+    function showhide(button) {
+        var entries = document.getElementsByClassName('icon');
+        if (button.getAttribute('id') === 'all') {
+          var ent = document.getElementsByClassName('entry');
+          for (i = 0; i < ent.length; i++) {
+            var eid = ent[i].getAttribute('id')
+            document.getElementById(eid).style.display = 'block'
+          }
+        } else {
+        for (i = 0; i < entries.length; i++) {
+          var eids = entries[i].parentNode.getAttribute('id')
+          if (entries[i].textContent === button.getAttribute('id')) {
+            document.getElementById(eids).style.display = 'block'
+          }
+          else {
+            document.getElementById(eids).style.display = 'none'
+          }
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
